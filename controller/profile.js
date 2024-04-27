@@ -1,3 +1,5 @@
+const connection = require("../config/db");
+
 exports.editProfile = async (req, res, next) => {
     try {
         const newImg = req.file.filename;
