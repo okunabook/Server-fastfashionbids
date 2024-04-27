@@ -2,21 +2,16 @@ const express = require('express')
 const cors =  require('cors')
 const morgan = require('morgan')
 const port = 4000
-
+const {readdirSync} = require('fs')
 const app = express()
 
 app.use(cors())
 app.use(morgan('dev'))
 
-app.get('/test',(req,res,next)=>{
-    try {
-        res.json({m:"ok"})
-    } catch (error) {
-        console.log(error);
-        next()
-    }
+readdirSync('./routes').map((filename)=>{
+    const filepath = path.join(__dirname,'routes',filename)
+    app.use('/api',require(filepath))
 })
-
 
 
 app.listen(port, () => {
