@@ -14,7 +14,7 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use('/api', express.static('public'))
 
-readdirSync("./routers")
+readdirSync("./routes")
     .map((prefix) => {
         const filepath = path.join(__dirname, "routers", prefix)
         app.use('/api', require(filepath))
