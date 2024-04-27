@@ -22,7 +22,7 @@ exports.register = async (req, res, next) => {
                     next()
                 }
                 if (results.length > 0) {
-                    res.json({ status: "error", message: "Usarnameมีผู้ใช้งานแล้ว" });
+                    res.json({ status: "error", message: "Usarname มีผู้ใช้งานแล้ว" });
                     return;
                 }
 
@@ -36,7 +36,7 @@ exports.register = async (req, res, next) => {
                             next()
                         }
                         if (emailResults.length > 0) {
-                            res.json({ status: "error", message: "Emailนี้มีผู้ใช้งานแล้ว" });
+                            res.json({ status: "error", message: "Email นี้มีผู้ใช้งานแล้ว" });
                             return;
                         }
 

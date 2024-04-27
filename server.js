@@ -1,24 +1,28 @@
-const express = require('express')
-const cors =  require('cors')
-const morgan = require('morgan')
-const port = 4000
-const {readdirSync} = require('fs')
-const path = require('path')
-const app = express()
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const { readdirSync } = require("fs");
+const path = require("path");
+const port = 2000;
 
-app.use(cors())
-app.use(express.json())
-app.use(morgan('dev'))
+require("./config/db");
 
-readdirSync('./routes').map((filename)=>{
-    const filepath = path.join(__dirname,'routes',filename)
-    app.use('/api',require(filepath))
-})
+const app = express();
 
+app.use(express.json());
+app.use(cors());
+app.use(morgan("dev"));
+app.use('/api', express.static('public'))
+
+readdirSync("./routers")
+    .map((prefix) => {
+        const filepath = path.join(__dirname, "routers", prefix)
+        app.use('/api', require(filepath))
+    })
 
 app.listen(port, () => {
     try {
-        console.log(`server started on localhost:${port}`);
+        console.log(`Server started on http://localhost:${port}`);
     } catch (error) {
         console.log(error);
     }
