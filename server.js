@@ -3,6 +3,7 @@ const cors =  require('cors')
 const morgan = require('morgan')
 const port = 4000
 const {readdirSync} = require('fs')
+const path = require('path')
 const app = express()
 
 app.use(cors())
