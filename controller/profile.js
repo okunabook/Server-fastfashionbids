@@ -1,3 +1,6 @@
+const path = require('path')
+const fs = require('fs');
+
 const connection = require("../config/db");
 
 exports.editProfile = async (req, res, next) => {
