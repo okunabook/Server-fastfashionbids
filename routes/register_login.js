@@ -160,5 +160,13 @@ router.get('/cheackauth',verifyJwt,(req,res)=>{
   res.json({massage:"okdee"})
 })
 
+router.get('/test',(req,res,next)=>{
+    try {
+        res.json({massage:"ok"})
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 
 module.exports = router;
