@@ -16,7 +16,7 @@ app.use('/api', express.static('public'))
 
 readdirSync("./routes")
     .map((prefix) => {
-        const filepath = path.join(__dirname, "routers", prefix)
+        const filepath = path.join(__dirname, "routes", prefix)
         app.use('/api', require(filepath))
     })
 
