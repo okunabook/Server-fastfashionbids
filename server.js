@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const { readdirSync } = require("fs");
+const fs = require('fs');
 const path = require("path");
 const port = 2000;
 
