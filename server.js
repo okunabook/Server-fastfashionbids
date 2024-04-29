@@ -13,7 +13,18 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
-app.use('/api', express.static('public'))
+app.use('/api', express.static(path.join(__dirname, 'public')));
+
+// เพิ่มเส้นทาง API เพื่อเข้าถึงภาพที่อยู่ในโฟลเดอร์ public/image
+app.get('/api/image/:imageName', (req, res) => {
+    // ดึงชื่อไฟล์ภาพจากพารามิเตอร์ URL
+    const imageName = req.params.imageName;
+    // สร้างตำแหน่งของไฟล์ภาพ
+    const imagePath = path.join(__dirname, 'public', 'image', imageName);
+    
+    // ส่งไฟล์ภาพกลับไปยังผู้ใช้
+    res.sendFile(imagePath);
+});
 
 readdirSync("./routes")
     .map((prefix) => {
