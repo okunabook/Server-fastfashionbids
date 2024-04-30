@@ -60,3 +60,33 @@ exports.listproduct = async(req, res,next) => {
 };
 
 
+exports.readproduct = async (req, res, next) => {
+    try {
+        const {id} = req.params 
+        db.query(
+            "SELECT users.username, sex.sexname, type.name, size.sizes " +
+            "FROM product " +
+            "INNER JOIN users ON product.id = users.id " +
+            "INNER JOIN sex ON product.id_sex = sex.id_sex " +
+            "INNER JOIN type ON product.id_type = type.id_type " +
+            "INNER JOIN size ON product.id_size = size.id_size " +
+            "WHERE product.id = ?", [id], 
+            (err, result) => {
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    next();
+                }
+                res.json({
+                    message: "ส่งข้อมูล",
+                    data: result,
+                });
+            }
+        );
+    } catch (error) {
+        res.json({ status: 500, msg: "Server Error <listproduct>", error: error });
+        console.log(error);
+        next();
+    }
+};
+
+
