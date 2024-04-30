@@ -35,7 +35,7 @@ exports.addproduct = async (req, res,next) => {
 exports.listproduct = async(req, res,next) => {
     try {
         db.query(
-            "SELECT users.username, sex.sexname, type.name, size.sizes " +
+            "SELECT product.name, product.img,size.sizes,product.brand,product.want " +
             "FROM product " +
             "INNER JOIN users ON product.id = users.id " +
             "INNER JOIN sex ON product.id_sex = sex.id_sex " +
@@ -44,7 +44,7 @@ exports.listproduct = async(req, res,next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next()
+                    next();
                 }
                 res.json({
                     message: "ส่งข้อมูล",
@@ -53,18 +53,19 @@ exports.listproduct = async(req, res,next) => {
             }
         );
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <listproduct>", error: error })
+        res.json({ status: 500, msg: "Server Error <listproduct>", error: error });
         console.log(error);
         next();
     }
 };
 
 
+
 exports.readproduct = async (req, res, next) => {
     try {
         const {id} = req.params 
         db.query(
-            "SELECT users.username, sex.sexname, type.name, size.sizes " +
+            "SELECT product.name,product.brand,product.color,product.detail,product.want,product.img,sizes,sex.sexname,type.name as typename " +
             "FROM product " +
             "INNER JOIN users ON product.id = users.id " +
             "INNER JOIN sex ON product.id_sex = sex.id_sex " +
