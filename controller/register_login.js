@@ -24,7 +24,7 @@ exports.register = async (req, res, next) => {
                     next()
                 }
                 if (results.length > 0) {
-                    res.json({ status: "error", message: "haved usarname" });
+                    res.json({ status: "error", message: "haved username" });
                     return;
                 }
 
