@@ -8,6 +8,8 @@ const uuid = require('uuid');
 exports.register = async (req, res, next) => {
     try {
         const { username, password, email } = req.body;
+        console.log(username,password,email);
+
 
         // สร้าง UUID สำหรับ ID
         const id = uuid.v4();
@@ -72,6 +74,7 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
+        console.log(username,password);
         connection.query(
             "SELECT * FROM users WHERE username=?",
             [username],
