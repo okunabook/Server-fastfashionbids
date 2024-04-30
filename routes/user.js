@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { editProfile } = require("../controller/profile");
+const { editProfile ,readuser} = require("../controller/profile");
 const {upload} = require("../middleware/uploadimage")
 
 router.put("/edit/profile/:id", editProfile)
-router.get('/user/:id')
+router.get('/user/:id',readuser)
 
 module.exports = router
