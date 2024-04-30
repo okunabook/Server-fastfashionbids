@@ -24,7 +24,7 @@ exports.register = async (req, res, next) => {
                     next()
                 }
                 if (results.length > 0) {
-                    res.json({ status: "error", message: "Usarname มีผู้ใช้งานแล้ว" });
+                    res.json({ status: "error", message: "haved usarname " });
                     return;
                 }
 
@@ -38,7 +38,7 @@ exports.register = async (req, res, next) => {
                             next()
                         }
                         if (emailResults.length > 0) {
-                            res.json({ status: "error", message: "Email นี้มีผู้ใช้งานแล้ว" });
+                            res.json({ status: "error", message: "haved email " });
                             return;
                         }
 
@@ -54,7 +54,7 @@ exports.register = async (req, res, next) => {
                                     }
                                     res.json({
                                         message: "success",
-                                        data: result,
+                                        id: result[0].id,
                                     });
                                 }
                             );
@@ -95,7 +95,7 @@ exports.login = async (req, res, next) => {
                         res.json({ status: "ok", message: "login succes", token, id: users[0].id });
                     } else {
                         res.json({ status: "error", message: "login failed" });
-                        next()
+                        return
                     }
                 });
             }
