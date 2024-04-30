@@ -54,7 +54,7 @@ exports.register = async (req, res, next) => {
                                     }
                                     res.json({
                                         message: "success",
-                                        id: result[0].id,
+                                        id: id,
                                     });
                                 }
                             );
