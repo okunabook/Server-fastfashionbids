@@ -8,7 +8,7 @@ exports.editProfile = async (req, res, next) => {
     try {
         const { fname, lname, address, tel ,Img} = req.body;
         const { id } = req.params;
-        console.log(req.file);
+        console.log(fname, lname, address, tel ,Img);
         
 
 
