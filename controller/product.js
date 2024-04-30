@@ -35,7 +35,7 @@ exports.addproduct = async (req, res,next) => {
 exports.listproduct = async(req, res,next) => {
     try {
         db.query(
-            "SELECT product.name, product.img,size.sizes,product.brand,product.want,type.name as typename " +
+            "SELECT product.name, product.img,size.sizes,product.brand,product.want,type.name as typename,product.id_sex,product.id_type,product.id_size " +
             "FROM product " +
             "INNER JOIN users ON product.id = users.id " +
             "INNER JOIN sex ON product.id_sex = sex.id_sex " +
@@ -65,7 +65,7 @@ exports.readproduct = async (req, res, next) => {
     try {
         const {id} = req.params 
         db.query(
-            "SELECT product.name,product.brand,product.color,product.detail,product.want,product.img,sizes,sex.sexname,type.name as typename " +
+            "SELECT product.name,product.brand,product.color,product.detail,product.want,product.img,sizes,sex.sexname,type.name as typename,product.id_sex,product.id_type,product.id_size " +
             "FROM product " +
             "INNER JOIN users ON product.id = users.id " +
             "INNER JOIN sex ON product.id_sex = sex.id_sex " +
