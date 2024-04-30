@@ -31,11 +31,11 @@ exports.addproduct = async (req, res,next) => {
 }
 
 
-// ดูproductทั้งหมด   
+// ดูproductทั้งหมดแบบไม่มีuserid   
 exports.listproduct = async(req, res,next) => {
     try {
         db.query(
-            "SELECT product.name, product.img,size.sizes,product.brand,product.want " +
+            "SELECT product.name, product.img,size.sizes,product.brand,product.want,type.name as typename " +
             "FROM product " +
             "INNER JOIN users ON product.id = users.id " +
             "INNER JOIN sex ON product.id_sex = sex.id_sex " +
@@ -60,7 +60,7 @@ exports.listproduct = async(req, res,next) => {
 };
 
 
-
+//ดูproductของหมดของuseridตัวเอง
 exports.readproduct = async (req, res, next) => {
     try {
         const {id} = req.params 
