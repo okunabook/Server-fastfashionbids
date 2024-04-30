@@ -7,6 +7,7 @@ exports.addproduct = async (req, res,next) => {
         const { id } = req.params
         const id_product = uuid.v4();
         const { name, brand, color, detail, want, id_size, id_sex, id_type } = req.body
+        console.log(name, brand, color, detail, want, id_size, id_sex, id_type);
         db.query(
             "INSERT INTO product (id, id_product, name, brand, color, detail, want,id_size,id_sex,id_type) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)",
             [id, id_product, name, brand, color, detail, want, id_size, id_sex, id_type],
