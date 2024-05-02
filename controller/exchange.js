@@ -6,11 +6,11 @@ exports.addexchange = async (req, res,next) => {
     try {
         const { id } = req.params
         const id_exchange = uuid.v4();
-        const { exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, id_size, id_sex, id_type } = req.body
-        console.log(exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, id_size, id_sex, id_type);
+        const { exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, exchange_img,id_size, id_sex, id_type } = req.body
+        console.log(exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img, id_size, id_sex, id_type);
         db.query(
-            "INSERT INTO exchange (id, id_exchange, exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,id_size,id_sex,id_type) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)",
-            [id, id_exchange,exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, id_size, id_sex, id_type],
+            "INSERT INTO exchange (id, id_exchange, exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img,id_size,id_sex,id_type) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)",
+            [id, id_exchange,exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img, id_size, id_sex, id_type],
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
