@@ -36,7 +36,7 @@ exports.readstroe = async(req,res,next) =>{
     try {
         const {id} = req.params
         db.query(
-            `select store.store_name,store.stor_img,store.store_brand,store.store_color,store.store_deatil,sex.sexname,type.name as typename,size.sizes,store.id_size,store.id_sex,store.id_type
+            `select store.store_name,store.stor_img,store.store_brand,store.store_color,store.store_deatil,sex.sexname,type.name as typename,size.sizes,store.id_size,store.id_sex,store.id_type,store.id_store
             form store
             inner join users on store.id = users.id
             inner join sex on store.id_sex = sex.id_sex
