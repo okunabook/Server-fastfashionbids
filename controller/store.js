@@ -3,17 +3,17 @@ const uuid = require('uuid');
 
 
 //ลงstoreสินค้าเพื่อนรอแลกของ 
-exports.addstore = async(req,res,next)=>{
+exports.addstore = async (req, res, next) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
         const id_store = uuid.v4()
-        const {store_name,store_brand,store_color,store_detail,store_img,id_size,id_sex,id_type} = req.body
+        const { store_name, store_brand, store_color, store_detail, store_img, id_size, id_sex, id_type } = req.body
         db.query(
-            `INSERT INTO store {id,id_store,store_name,store_brand,store_color,store_detail,store_img,id_size,id_sex,id_type} 
+            `INSERT INTO store (id,id_store,store_name,store_brand,store_color,store_detail,store_img,id_size,id_sex,id_type)
             value(?,?,?,?,?,?,?,?,?,?)`,
-            [id,id_store,store_name,store_brand,store_color,store_detail,store_img,id_size,id_sex,id_type],
-            (err,result)=>{
-                if(err){
+            [id, id_store, store_name, store_brand, store_color, store_detail, store_img, id_size, id_sex, id_type],
+            (err, result) => {
+                if (err) {
                     res.json({ status: "error", message: err });
                     next()
                 }
@@ -22,7 +22,7 @@ exports.addstore = async(req,res,next)=>{
                     data: result,
                 });
             }
-            
+
         )
     } catch (error) {
         res.json({ status: 500, msg: "Server Error <addstore>", error: error })
@@ -32,22 +32,23 @@ exports.addstore = async(req,res,next)=>{
 }
 
 //ดูstoreทั้งหมดของเรา คนอื่นไม่เห็น
-exports.readstroe = async(req,res,next) =>{
+exports.readstore = async (req, res, next) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
         db.query(
-            `select store.store_name,store.stor_img,store.store_brand,store.store_color,store.store_deatil,sex.sexname,type.name as typename,size.sizes,store.id_size,store.id_sex,store.id_type,store.id_store
-            form store
-            inner join users on store.id = users.id
-            inner join sex on store.id_sex = sex.id_sex
-            inner join size on store.id_size = size.id_size
-            inner join type on store.id_type = type.id_type
-            where id = ?
-            `,[id],
-            (err,result)=>{
-                if(err){
+            `select store.store_name,store.store_brand,store.store_img,store.store_color,store.store_detail,size.sizes,sex.sexname,type.name as typename,
+            store.id_sex,store.id_size,store.id_type,store.id
+            FROM store
+            INNER join users on store.id = users.id
+            INNER join sex on store.id_sex = sex.id_sex
+            INNER join size on store.id_size = size.id_size
+            INNER join type on store.id_type = type.id_type
+            WHERE store.id = ?
+            `, [id],
+            (err, result) => {
+                if (err) {
                     res.json({ status: "error", message: err });
-                    next();
+                    return next();
                 }
                 res.json({
                     message: "success",
@@ -55,7 +56,7 @@ exports.readstroe = async(req,res,next) =>{
                 });
             }
         )
-        
+
     } catch (error) {
         res.json({ status: 500, msg: "Server Error <resdstore>", error: error })
         console.log(error);
@@ -67,8 +68,8 @@ exports.readstroe = async(req,res,next) =>{
 exports.removestore = async (req, res, next) => {
     try {
         const { id_store } = req.params;
-        const { id } = req.params; 
-        console.log(id,id_store);
+        const { id } = req.params;
+        console.log(id, id_store);
         db.query(
             "SELECT id FROM store WHERE id_store = ?",
             [id_store],
