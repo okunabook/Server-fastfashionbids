@@ -15,10 +15,11 @@ exports.editProfile = async (req, res, next) => {
 
         connection.query(
             `SELECT img FROM users 
-             WHERE users.id = ?`, id, (err, data) => {
+             WHERE users.id = ?`, id, (err, data,next) => {
             if (err) {
                 res.json({ status: "Error edit", msg: err });
-                next();
+                console.log(err);
+                return next();
             }
 
             // const oldImg = data[0].img;
@@ -46,7 +47,8 @@ exports.editProfile = async (req, res, next) => {
                  WHERE users.id = ?`, [fname, lname, address, tel, Img, id], (err, data) => {
                 if (err) {
                     res.json({ status: "Error update profile", msg: err });
-                    next();
+                    console.log(err);
+                    return next();
                 }
 
                 res.json({ msg: "Edit successfully" });
@@ -71,7 +73,8 @@ exports.readuser = async (req, res, next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error register readuser", msg: err });
-                    next();
+                    console.log(err);
+                    return next();
                 }
                 res.json({ msg: "ok", data: result });
 

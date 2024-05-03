@@ -15,7 +15,8 @@ exports.addstore = async (req, res, next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next()
+                    console.log(err);
+                    return next();
                 }
                 res.json({
                     message: "success",
@@ -37,7 +38,7 @@ exports.readstore = async (req, res, next) => {
         const { id } = req.params
         db.query(
             `select store.store_name,store.store_brand,store.store_img,store.store_color,store.store_detail,size.sizes,sex.sexname,type.name as typename,
-            store.id_sex,store.id_size,store.id_type,store.id
+            store.id_sex,store.id_size,store.id_type,store.id_store,store.id
             FROM store
             INNER join users on store.id = users.id
             INNER join sex on store.id_sex = sex.id_sex
@@ -48,6 +49,7 @@ exports.readstore = async (req, res, next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
+                    console.log(err);
                     return next();
                 }
                 res.json({
@@ -76,7 +78,8 @@ exports.removestore = async (req, res, next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next();
+                    console.log(err);
+                    return next();
                 }
 
                 if (result.length === 0) {

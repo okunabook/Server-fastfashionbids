@@ -14,7 +14,8 @@ exports.addexchange = async (req, res,next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next()
+                    console.log(err);
+                    return next();
                 }
                 res.json({
                     message: "success",
@@ -44,7 +45,8 @@ exports.listexchange = async(req, res,next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next();
+                    console.log(err);
+                    return next();
                 }
                 res.json({
                     message: "success",
@@ -75,7 +77,8 @@ exports.readexchange = async (req, res, next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next();
+                    console.log(err);
+                    return next();
                 }
                 res.json({
                     message: "success",
@@ -103,7 +106,8 @@ exports.removeexchange = async (req, res, next) => {
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next();
+                    console.log(err);
+                    return next();
                 }
 
                 if (result.length === 0) {

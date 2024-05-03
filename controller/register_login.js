@@ -21,7 +21,8 @@ exports.register = async (req, res, next) => {
             async (err, results) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next()
+                    console.log(err);
+                    return next();
                 }
                 if (results.length > 0) {
                     res.json({ status: "error", message: "haved username" });
@@ -35,11 +36,13 @@ exports.register = async (req, res, next) => {
                     async (err, emailResults) => {
                         if (err) {
                             res.json({ status: "error", message: err });
-                            next()
+                            console.log(err);
+                            return next();
                         }
                         if (emailResults.length > 0) {
                             res.json({ status: "error", message: "haved email" });
-                            return;
+                            console.log(err);
+                            return next();
                         }
 
                         //ใส่เกลือ
@@ -74,14 +77,14 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
-        console.log(username,password);
         connection.query(
             "SELECT * FROM users WHERE username=?",
             [username],
             (err, users) => {
                 if (err) {
                     res.json({ status: "error", message: err });
-                    next()
+                    console.log(err);
+                    return next();
                 }
                 if (users.length == 0) {
                     res.json({ status: "error", message: "no user found" });
@@ -92,18 +95,25 @@ exports.login = async (req, res, next) => {
                         var token = jwt.sign({ username: users[0].username, id: users[0].id }, secret, {
                             expiresIn: "1m",
                         });
-                        res.json({ status: "ok", message: "login succes", token, id: users[0].id });
+                        // เพิ่มการตรวจสอบ role ก่อนส่งข้อมูลกลับ
+                        if (users[0].role === 'user') {
+                            res.json({ status: "ok", message: "userlogin success", token, id: users[0].id });
+                        } else if (users[0].role === 'admin') {
+                            res.json({ status: "ok", message: "adminlogin success", token, id: users[0].id });
+                        } else {
+                            res.json({ status: "error", message: "unknown role" });
+                        }
                     } else {
                         res.json({ status: "error", message: "login failed" });
-                        return
+                        return;
                     }
                 });
             }
         );
     } catch (error) {
         console.log(error);
-        res.status(500).json({ status: "error", message: "login error" })
-        next()
+        res.status(500).json({ status: "error", message: "login error" });
+        next();
     }
 };
 
