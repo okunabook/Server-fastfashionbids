@@ -1,30 +1,37 @@
 const db = require('../config/db')
 const uuid = require('uuid');
-
+const cloudinary = require('../config/cloudinary.js');
 
 //ลงstoreสินค้าเพื่อนรอแลกของ 
 exports.addstore = async (req, res, next) => {
     try {
         const { id } = req.params
         const id_store = uuid.v4()
-        const { store_name, store_brand, store_color, store_detail, store_img, id_size, id_sex, id_type } = req.body
-        db.query(
-            `INSERT INTO store (id,id_store,store_name,store_brand,store_color,store_detail,store_img,id_size,id_sex,id_type)
-            value(?,?,?,?,?,?,?,?,?,?)`,
-            [id, id_store, store_name, store_brand, store_color, store_detail, store_img, id_size, id_sex, id_type],
-            (err, result) => {
-                if (err) {
-                    res.json({ status: "error", message: err });
-                    console.log(err);
-                    return next();
-                }
-                res.json({
-                    message: "success",
-                    data: result,
-                });
+        const { store_name, store_brand, store_color, store_detail, id_size, id_sex, id_type } = req.body
+        cloudinary.uploader.upload(req.file.path, function (err, result) {
+            if (err) {
+                res.json({ status: "error", message: err });
+                console.log(err);
+                return next();
             }
-
-        )
+            const newImg = result.secure_url;
+            db.query(
+                `INSERT INTO store (id,id_store,store_name,store_brand,store_color,store_detail,store_img,id_size,id_sex,id_type)
+                value(?,?,?,?,?,?,?,?,?,?)`,
+                [id, id_store, store_name, store_brand, store_color, store_detail, newImg, id_size, id_sex, id_type],
+                (err, result) => {
+                    if (err) {
+                        res.json({ status: "error", message: err });
+                        console.log(err);
+                        return next();
+                    }
+                    res.json({
+                        message: "success",
+                        data: result,
+                    });
+                }
+            )
+        })
     } catch (error) {
         res.json({ status: 500, msg: "Server Error <addstore>", error: error })
         console.log(error);

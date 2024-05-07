@@ -1,28 +1,37 @@
 const db = require('../config/db')
 const uuid = require('uuid');
-
+const cloudinary = require('../config/cloudinary.js');
 //ลงexchange
 exports.addexchange = async (req, res,next) => {
     try {
         const { id } = req.params
         const id_exchange = uuid.v4();
-        const { exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, exchange_img,id_size, id_sex, id_type } = req.body
-        console.log(exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img, id_size, id_sex, id_type);
-        db.query(
-            "INSERT INTO exchange (id, id_exchange, exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img,id_size,id_sex,id_type) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?,?)",
-            [id, id_exchange,exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img, id_size, id_sex, id_type],
-            (err, result) => {
-                if (err) {
-                    res.json({ status: "error", message: err });
-                    console.log(err);
-                    return next();
-                }
-                res.json({
-                    message: "success",
-                    data: result,
-                });
+        const { exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,id_size, id_sex, id_type } = req.body
+        console.log(exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, id_size, id_sex, id_type);
+        cloudinary.uploader.upload(req.file.path, function (err, result) {
+            if (err) {
+                res.json({ status: "error", message: err });
+                console.log(err);
+                return next();
             }
-        );
+            const newImg = result.secure_url;
+            db.query(
+                "INSERT INTO exchange (id, id_exchange, exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img,id_size,id_sex,id_type) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?,?)",
+                [id, id_exchange,exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,newImg, id_size, id_sex, id_type],
+                (err, result) => {
+                    if (err) {
+                        res.json({ status: "error", message: err });
+                        console.log(err);
+                        return next();
+                    }
+                    res.json({
+                        message: "success",
+                        data: result,
+                    });
+                }
+            );
+            
+        })
     } catch (error) {
         res.json({ status: 500, msg: "Server Error <addexchange>", error: error })
         console.log(error);
@@ -35,25 +44,47 @@ exports.addexchange = async (req, res,next) => {
 // ดูexchangeทั้งหมดแบบไม่มีuserid   
 exports.listexchange = async(req, res,next) => {
     try {
-        db.query(
-            "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size " +
-            "FROM exchange " +
-            "INNER JOIN users ON exchange.id = users.id " +
-            "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
-            "INNER JOIN type ON exchange.id_type = type.id_type " +
-            "INNER JOIN size ON exchange.id_size = size.id_size",
-            (err, result) => {
-                if (err) {
-                    res.json({ status: "error", message: err });
-                    console.log(err);
-                    return next();
+        const {id_size,id_sex,id_type,option} = req.body
+        if(option == true ){
+            db.query(
+                `SELECT * 
+                FROM exchange 
+                WHERE id_size = ? OR id_sex = ? OR id_type = ?`,
+                [id_size,id_sex,id_type],
+                (err,result)=>{
+                    if (err) {
+                        res.json({ status: "error", message: err });
+                        console.log(err);
+                        return next();
+                    }
+                    res.json({
+                        message: " on options",
+                        data: result,
+                    });
                 }
-                res.json({
-                    message: "success",
-                    data: result,
-                });
-            }
-        );
+            )
+
+        } else{
+            db.query(
+                "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size " +
+                "FROM exchange " +
+                "INNER JOIN users ON exchange.id = users.id " +
+                "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
+                "INNER JOIN type ON exchange.id_type = type.id_type " +
+                "INNER JOIN size ON exchange.id_size = size.id_size",
+                (err, result) => {
+                    if (err) {
+                        res.json({ status: "error", message: err });
+                        console.log(err);
+                        return next();
+                    }
+                    res.json({
+                        message: "success",
+                        data: result,
+                    });
+                }
+            );
+        }
     } catch (error) {
         res.json({ status: 500, msg: "Server Error <listexchange>", error: error });
         console.log(error);
@@ -87,59 +118,45 @@ exports.readexchange = async (req, res, next) => {
             }
         );
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <listexchange>", error: error });
+        res.json({ status: 500, msg: "Server Error <readexchange>", error: error });
         console.log(error);
         next();
     }
 };
 
-
-//ลบexchange
-exports.removeexchange = async (req, res, next) => {
+// ดูรายละเอียดสินค้านั้นๆ
+exports.detailexchange = async(req,res,next)=>{
     try {
-        const { id_exchange } = req.params;
-        const { id } = req.params; 
-        console.log(id,id_exchange);
+        const {id} = req.params
+        const {id_exchange} =  req.params
         db.query(
-            "SELECT id FROM exchange WHERE id_exchange = ?",
-            [id_exchange],
-            (err, result) => {
+            `select users.username,exchange.id_exchange,exchange.exchange_name,exchange.exchange_brand,exchange.exchange_color,exchange.exchange_detail,exchange.exchange_want,
+            exchange.exchange_img,sex.sexname,size.sizes,type.name as typename,exchange.id_size,exchange.id_sex,exchange.id_type
+            from exchange
+            inner join users on exchange.id = users.id
+            inner join sex on exchange.id_sex = sex.id_sex
+            inner join size on exchange.id_size = size.id_size
+            inner join type on exchange.id_type = type.id_type
+            where id_exchange = ?`,[id_exchange],
+            (err,result)=>{
                 if (err) {
                     res.json({ status: "error", message: err });
                     console.log(err);
                     return next();
                 }
-
-                if (result.length === 0) {
-                    res.status(404).json({ status: "error", message: "Exchange not found" });
-                    next();
-                } else {
-                    const exchangeOwnerId = result[0].id;
-                    if (exchangeOwnerId !== id) {
-                        res.status(403).json({ status: "error", message: "You are not authorized to delete this exchange" });
-                        next();
-                    } else {
-                        db.query(
-                            "DELETE FROM exchange WHERE id_exchange = ?",
-                            [id_exchange],
-                            (err, result) => {
-                                if (err) {
-                                    res.json({ status: "error", message: err });
-                                    next();
-                                }
-                                res.json({
-                                    message: "success",
-                                });
-                            }
-                        );
-                    }
-                }
+                res.json({
+                    message: "success",
+                    data: result,
+                });
             }
-        );
+        )
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <removeexchange>", error: error });
+        res.json({ status: 500, msg: "Server Error <detailexchange>", error: error });
         console.log(error);
         next();
     }
-};
+}
+
+
+
 

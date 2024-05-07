@@ -1,67 +1,42 @@
-const path = require('path')
-const fs = require('fs');
-
 const connection = require("../config/db");
-
+const cloudinary = require('../config/cloudinary.js');
 
 exports.editProfile = async (req, res, next) => {
     try {
-        const { fname, lname, address, tel ,Img} = req.body;
-        const { id } = req.params;
-        console.log(fname, lname, address, tel ,Img);
-        
-
-
-
-        connection.query(
-            `SELECT img FROM users 
-             WHERE users.id = ?`, id, (err, data,next) => {
+        const { fname, lname, address, tel } = req.body
+        const { id } = req.params
+        cloudinary.uploader.upload(req.file.path, function (err, result) {
             if (err) {
-                res.json({ status: "Error edit", msg: err });
+                res.json({ status: "error", message: err });
                 console.log(err);
                 return next();
             }
-
-            // const oldImg = data[0].img;
-
-            // if (oldImg) {
-            //     if (fs.existsSync(path.join(__dirname, "../public/image", oldImg))) {
-            //         fs.unlink(path.join(__dirname, "../public/image", oldImg), (err) => {
-            //             if (err) {
-            //                 console.log(err);
-            //                 res.json({ status: "Error delete img" });
-            //                 next();
-            //             }
-            //             console.log("delete img successfully");
-            //         });
-            //     } else {
-            //         console.log("edit img successfully");
-            //     }
-            // }
-
+            const newImg = result.secure_url;
             connection.query(
-                `UPDATE users 
-                 SET users.fname = ?, users.lname = ?, 
-                 users.address = ?, users.tel = ?,
-                 users.img = ?
-                 WHERE users.id = ?`, [fname, lname, address, tel, Img, id], (err, data) => {
-                if (err) {
-                    res.json({ status: "Error update profile", msg: err });
-                    console.log(err);
-                    return next();
+                "UPDATE users SET fname = ?, lname = ?, address = ?, tel = ?, img = ? WHERE id = ?",
+                [fname, lname, address, tel, newImg, id],
+                (err, result) => {
+                    if (err) {
+                        res.json({ status: "error", message: err });
+                        console.log(err);
+                        return next();
+                    }
+                    res.json({
+                        message: "success",
+                        data: result,
+                    });
                 }
+            );
+        })
 
-                res.json({ msg: "Edit successfully" });
-            }
-            )
-        }
-        )
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <editprofile>", error: error })
+        res.json({ status: 500, msg: "Server Error <editProfile>", error: error });
         console.log(error);
         next();
     }
 }
+
+
 
 
 exports.readuser = async (req, res, next) => {
@@ -82,6 +57,11 @@ exports.readuser = async (req, res, next) => {
 
         )
     } catch (error) {
-
+        res.json({ status: 500, msg: "Server Error <readuser>", error: error });
+        console.log(error);
+        next();
     }
 }
+
+
+
