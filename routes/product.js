@@ -7,7 +7,7 @@ const upload = require("../middleware/uploadimage")
 
 //     All router Exchange
 router.post('/:id/addexchange',upload.single('exchange_img'),addexchange)
-router.post('/exchange',listexchange)
+router.get('/exchange',listexchange)
 router.get('/:id/exchange',readexchange)
 router.get('/exchange/:id_exchange',detailexchange)
 router.delete('/:id/removeexchange/:id_exchange',removeexchange)

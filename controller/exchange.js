@@ -2,11 +2,11 @@ const db = require('../config/db')
 const uuid = require('uuid');
 const cloudinary = require('../config/cloudinary.js');
 //ลงexchange
-exports.addexchange = async (req, res,next) => {
+exports.addexchange = async (req, res, next) => {
     try {
         const { id } = req.params
         const id_exchange = uuid.v4();
-        const { exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,id_size, id_sex, id_type } = req.body
+        const { exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, id_size, id_sex, id_type } = req.body
         console.log(exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, id_size, id_sex, id_type);
         cloudinary.uploader.upload(req.file.path, function (err, result) {
             if (err) {
@@ -17,7 +17,7 @@ exports.addexchange = async (req, res,next) => {
             const newImg = result.secure_url;
             db.query(
                 "INSERT INTO exchange (id, id_exchange, exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,exchange_img,id_size,id_sex,id_type) VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?,?)",
-                [id, id_exchange,exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want,newImg, id_size, id_sex, id_type],
+                [id, id_exchange, exchange_name, exchange_brand, exchange_color, exchange_detail, exchange_want, newImg, id_size, id_sex, id_type],
                 (err, result) => {
                     if (err) {
                         res.json({ status: "error", message: err });
@@ -30,10 +30,10 @@ exports.addexchange = async (req, res,next) => {
                     });
                 }
             );
-            
+
         })
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <addexchange>", error: error })
+        res.json({ status: 500, message: "Server Error <addexchange>", error: error })
         console.log(error);
         next();
 
@@ -42,51 +42,30 @@ exports.addexchange = async (req, res,next) => {
 
 
 // ดูexchangeทั้งหมดแบบไม่มีuserid   
-exports.listexchange = async(req, res,next) => {
+exports.listexchange = async (req, res, next) => {
     try {
-        const {id_size,id_sex,id_type,option} = req.body
-        if(option == true ){
-            db.query(
-                `SELECT * 
-                FROM exchange 
-                WHERE id_size = ? OR id_sex = ? OR id_type = ?`,
-                [id_size,id_sex,id_type],
-                (err,result)=>{
-                    if (err) {
-                        res.json({ status: "error", message: err });
-                        console.log(err);
-                        return next();
-                    }
-                    res.json({
-                        message: " on options",
-                        data: result,
-                    });
+        db.query(
+            "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size " +
+            "FROM exchange " +
+            "INNER JOIN users ON exchange.id = users.id " +
+            "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
+            "INNER JOIN type ON exchange.id_type = type.id_type " +
+            "INNER JOIN size ON exchange.id_size = size.id_size",
+            (err, result) => {
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
                 }
-            )
+                res.json({
+                    message: "success",
+                    data: result,
+                });
+            }
+        );
 
-        } else{
-            db.query(
-                "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size " +
-                "FROM exchange " +
-                "INNER JOIN users ON exchange.id = users.id " +
-                "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
-                "INNER JOIN type ON exchange.id_type = type.id_type " +
-                "INNER JOIN size ON exchange.id_size = size.id_size",
-                (err, result) => {
-                    if (err) {
-                        res.json({ status: "error", message: err });
-                        console.log(err);
-                        return next();
-                    }
-                    res.json({
-                        message: "success",
-                        data: result,
-                    });
-                }
-            );
-        }
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <listexchange>", error: error });
+        res.json({ status: 500, message: "Server Error <listexchange>", error: error });
         console.log(error);
         next();
     }
@@ -96,7 +75,7 @@ exports.listexchange = async(req, res,next) => {
 //ดูexchangeของหมดของuseridตัวเอง
 exports.readexchange = async (req, res, next) => {
     try {
-        const {id} = req.params 
+        const { id } = req.params
         db.query(
             "SELECT exchange.exchange_name,exchange.exchange_brand,exchange.exchange_color,exchange.exchange_detail,exchange.exchange_want,exchange.exchange_img,sizes,sex.sexname,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size,exchange.id_exchange " +
             "FROM exchange " +
@@ -104,7 +83,7 @@ exports.readexchange = async (req, res, next) => {
             "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
             "INNER JOIN type ON exchange.id_type = type.id_type " +
             "INNER JOIN size ON exchange.id_size = size.id_size " +
-            "WHERE exchange.id = ?", [id], 
+            "WHERE exchange.id = ?", [id],
             (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
@@ -118,17 +97,17 @@ exports.readexchange = async (req, res, next) => {
             }
         );
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <readexchange>", error: error });
+        res.json({ status: 500, message: "Server Error <readexchange>", error: error });
         console.log(error);
         next();
     }
 };
 
 // ดูรายละเอียดสินค้านั้นๆ
-exports.detailexchange = async(req,res,next)=>{
+exports.detailexchange = async (req, res, next) => {
     try {
-        const {id} = req.params
-        const {id_exchange} =  req.params
+        const { id } = req.params
+        const { id_exchange } = req.params
         db.query(
             `select users.username,exchange.id_exchange,exchange.exchange_name,exchange.exchange_brand,exchange.exchange_color,exchange.exchange_detail,exchange.exchange_want,
             exchange.exchange_img,sex.sexname,size.sizes,type.name as typename,exchange.id_size,exchange.id_sex,exchange.id_type
@@ -137,8 +116,8 @@ exports.detailexchange = async(req,res,next)=>{
             inner join sex on exchange.id_sex = sex.id_sex
             inner join size on exchange.id_size = size.id_size
             inner join type on exchange.id_type = type.id_type
-            where id_exchange = ?`,[id_exchange],
-            (err,result)=>{
+            where id_exchange = ?`, [id_exchange],
+            (err, result) => {
                 if (err) {
                     res.json({ status: "error", message: err });
                     console.log(err);
@@ -151,7 +130,7 @@ exports.detailexchange = async(req,res,next)=>{
             }
         )
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <detailexchange>", error: error });
+        res.json({ status: 500, message: "Server Error <detailexchange>", error: error });
         console.log(error);
         next();
     }

@@ -39,7 +39,7 @@ exports.viewuser = async (req, res, next) => {
         );
     } catch (error) {
         console.log(error);
-        res.json({ status: 500, msg: "Server Error <viewusererror>", error: error });
+        res.json({ status: 500, message: "Server Error <viewusererror>", error: error });
         return next();
     }
 };
@@ -99,7 +99,7 @@ exports.removeuser = async (req, res, next) => {
         );
     } catch (error) {
         console.log(error);
-        res.json({ status: 500, msg: "Server Error <removeuser>", error: error });
+        res.json({ status: 500, message: "Server Error <removeuser>", error: error });
         return next();
     }
 };
@@ -148,7 +148,7 @@ exports.viewallexchange = async (req, res, next) => {
         );
     } catch (error) {
         console.log(error);
-        res.json({ status: 500, msg: "Server Error <viewallexchange>", error: error });
+        res.json({ status: 500, message: "Server Error <viewallexchange>", error: error });
         return next();
     }
 };
@@ -229,7 +229,7 @@ exports.removeexchange = async (req, res, next) => {
         );
     } catch (error) {
         console.log(error);
-        res.json({ status: 500, msg: "Server Error <removeexchange>", error: error });
+        res.json({ status: 500, message: "Server Error <removeexchange>", error: error });
         return next(); 
     }
 }

@@ -30,7 +30,7 @@ exports.editProfile = async (req, res, next) => {
         })
 
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <editProfile>", error: error });
+        res.json({ status: 500, message: "Server Error <editProfile>", error: error });
         console.log(error);
         next();
     }
@@ -47,17 +47,17 @@ exports.readuser = async (req, res, next) => {
             [id],
             (err, result) => {
                 if (err) {
-                    res.json({ status: "error register readuser", msg: err });
+                    res.json({ status: "error register readuser", message: err });
                     console.log(err);
                     return next();
                 }
-                res.json({ msg: "ok", data: result });
+                res.json({ message: "ok", data: result });
 
             }
 
         )
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <readuser>", error: error });
+        res.json({ status: 500, message: "Server Error <readuser>", error: error });
         console.log(error);
         next();
     }

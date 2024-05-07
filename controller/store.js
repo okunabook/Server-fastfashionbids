@@ -33,7 +33,7 @@ exports.addstore = async (req, res, next) => {
             )
         })
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <addstore>", error: error })
+        res.json({ status: 500, message: "Server Error <addstore>", error: error })
         console.log(error);
         next();
     }
@@ -67,7 +67,7 @@ exports.readstore = async (req, res, next) => {
         )
 
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <resdstore>", error: error })
+        res.json({ status: 500, message: "Server Error <resdstore>", error: error })
         console.log(error);
         next();
     }
@@ -116,7 +116,7 @@ exports.removestore = async (req, res, next) => {
             }
         );
     } catch (error) {
-        res.json({ status: 500, msg: "Server Error <removestore>", error: error });
+        res.json({ status: 500, message: "Server Error <removestore>", error: error });
         console.log(error);
         next();
     }
