@@ -45,7 +45,7 @@ exports.addexchange = async (req, res, next) => {
 exports.listexchange = async (req, res, next) => {
     try {
         db.query(
-            "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size " +
+            "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,sex.sexname,exchange.id_sex,exchange.id_type,exchange.id_size " +
             "FROM exchange " +
             "INNER JOIN users ON exchange.id = users.id " +
             "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
@@ -77,7 +77,7 @@ exports.readexchange = async (req, res, next) => {
     try {
         const { id } = req.params
         db.query(
-            "SELECT exchange.exchange_name,exchange.exchange_brand,exchange.exchange_color,exchange.exchange_detail,exchange.exchange_want,exchange.exchange_img,sizes,sex.sexname,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size,exchange.id_exchange " +
+            "SELECT exchange.exchange_name,exchange.exchange_brand,exchange.exchange_color,exchange.exchange_detail,exchange.exchange_want,exchange.exchange_img,size.sizes,sex.sexname,type.name as typename,exchange.id_sex,exchange.id_type,exchange.id_size,exchange.id_exchange " +
             "FROM exchange " +
             "INNER JOIN users ON exchange.id = users.id " +
             "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
