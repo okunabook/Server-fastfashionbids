@@ -164,7 +164,7 @@ exports.readexchange = async (req, res, next) => {
 // ดูรายละเอียดสินค้านั้นๆ
 exports.detailexchange = async (req, res, next) => {
     try {
-        const { id } = req.params
+        
         const { id_exchange } = req.params
         db.query(
             `select users.username,exchange.id_exchange,exchange.exchange_name,exchange.exchange_brand,exchange.exchange_color,exchange.exchange_detail,exchange.exchange_want,
