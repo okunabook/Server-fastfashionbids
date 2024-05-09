@@ -45,7 +45,7 @@ exports.addexchange = async (req, res, next) => {
 exports.listexchange = async (req, res, next) => {
     try {
         db.query(
-            "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,sex.sexname,exchange.id_sex,exchange.id_type,exchange.id_size " +
+            "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,sex.sexname,exchange.id_sex,exchange.id_type,exchange.id_size,id_exchange " +
             "FROM exchange " +
             "INNER JOIN users ON exchange.id = users.id " +
             "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
@@ -70,6 +70,64 @@ exports.listexchange = async (req, res, next) => {
         next();
     }
 };
+
+//ค้นหาด้วยoption
+exports.option = async(req,res,next)=>{
+    try {
+        const {id_size,id_sex,id_type,option} = req.body
+        if(option == "true"){
+            db.query(
+                `select * from exchnage where id_size = ? or id_sez = ? or id_type =?`,
+                [id_size,id_sex,id_type],
+                (err,result)=>{
+                    if (err) {
+                        res.json({ status: "error", message: err });
+                        console.log(err);
+                        return next();
+                    }
+                    res.json({
+                        message: "success",
+                        data: result,
+                    });
+                }
+            )
+        }else{
+            db.query(
+                "SELECT exchange.exchange_name, exchange.exchange_img,size.sizes,exchange.exchange_brand,exchange.exchange_want,type.name as typename,sex.sexname,exchange.id_sex,exchange.id_type,exchange.id_size " +
+                "FROM exchange " +
+                "INNER JOIN users ON exchange.id = users.id " +
+                "INNER JOIN sex ON exchange.id_sex = sex.id_sex " +
+                "INNER JOIN type ON exchange.id_type = type.id_type " +
+                "INNER JOIN size ON exchange.id_size = size.id_size",
+                (err, result) => {
+                    if (err) {
+                        res.json({ status: "error", message: err });
+                        console.log(err);
+                        return next();
+                    }
+                    res.json({
+                        message: "success",
+                        data: result,
+                    });
+                }
+            );
+        }
+    } catch (error) {
+        
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 //ดูexchangeของหมดของuseridตัวเอง
