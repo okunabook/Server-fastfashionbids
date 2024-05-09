@@ -164,36 +164,54 @@ exports.readexchange = async (req, res, next) => {
 // ดูรายละเอียดสินค้านั้นๆ
 exports.detailexchange = async (req, res, next) => {
     try {
-        
-        const { id_exchange } = req.params
+        const { id, id_exchange } = req.params;
+
+        // ค้นหาข้อมูลผู้ใช้
         db.query(
-            `select users.username,exchange.id_exchange,exchange.exchange_name,exchange.exchange_brand,exchange.exchange_color,exchange.exchange_detail,exchange.exchange_want,
-            exchange.exchange_img,sex.sexname,size.sizes,type.name as typename,exchange.id_size,exchange.id_sex,exchange.id_type
-            from exchange
-            inner join users on exchange.id = users.id
-            inner join sex on exchange.id_sex = sex.id_sex
-            inner join size on exchange.id_size = size.id_size
-            inner join type on exchange.id_type = type.id_type
-            where id_exchange = ?`, [id_exchange],
-            (err, result) => {
+            `SELECT users.img
+            FROM users
+            WHERE users.id = ?`, [id],
+            (err, userResult) => {
                 if (err) {
                     res.json({ status: "error", message: err });
                     console.log(err);
                     return next();
                 }
-                res.json({
-                    message: "success",
-                    data: result,
-                });
+                
+                // ค้นหาข้อมูลการแลกเปลี่ยน
+                db.query(
+                    `SELECT users.username, exchange.id_exchange, exchange.exchange_name, exchange.exchange_brand, exchange.exchange_color, exchange.exchange_detail, exchange.exchange_want,
+                    exchange.exchange_img, sex.sexname, size.sizes, type.name AS typename, exchange.id_size, exchange.id_sex, exchange.id_type
+                    FROM exchange
+                    INNER JOIN users ON exchange.id = users.id
+                    INNER JOIN sex ON exchange.id_sex = sex.id_sex
+                    INNER JOIN size ON exchange.id_size = size.id_size
+                    INNER JOIN type ON exchange.id_type = type.id_type
+                    WHERE id_exchange = ?`, [id_exchange],
+                    (err, exchangeResult) => {
+                        if (err) {
+                            res.json({ status: "error", message: err });
+                            console.log(err);
+                            return next();
+                        }
+                        
+                        // ส่งข้อมูลผู้ใช้และข้อมูลการแลกเปลี่ยนกลับไปยังไคลเอนต์
+                        res.json({
+                            status: "success",
+                            user: userResult,
+                            exchange: exchangeResult
+                        });
+                    }
+                );
             }
-        )
+        );
+
     } catch (error) {
         res.json({ status: 500, message: "Server Error <detailexchange>", error: error });
         console.log(error);
         next();
     }
 }
-
 
 
 
