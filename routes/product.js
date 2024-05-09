@@ -10,7 +10,7 @@ router.post('/:id/addexchange',upload.single('exchange_img'),addexchange)
 router.get('/exchange',listexchange)
 router.post('/options',option)
 router.get('/:id/exchange',readexchange)
-router.get('/exchange/:id_exchange/',detailexchange)
+router.get('/exchange/:id_exchange/:id',detailexchange)
 router.delete('/:id/removeexchange/:id_exchange',removeexchange)
 
 
