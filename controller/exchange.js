@@ -161,10 +161,12 @@ exports.readexchange = async (req, res, next) => {
     }
 };
 
-// ดูรายละเอียดสินค้านั้นๆ
+
+// ดูรายละเอียดสินค้าแบบloginแล้ว
 exports.detailexchange = async (req, res, next) => {
     try {
         const { id, id_exchange } = req.params;
+        
 
         // ค้นหาข้อมูลผู้ใช้
         db.query(
@@ -213,5 +215,38 @@ exports.detailexchange = async (req, res, next) => {
     }
 }
 
+// ดูรายละเอียดสินค้าแบบloginแล้ว
+exports.nologvie = async(req,res)=>{
+    try {
+        const {id_exchange} = req.params
+        db.query(
+            `SELECT users.username, exchange.id_exchange, exchange.exchange_name, exchange.exchange_brand, exchange.exchange_color, exchange.exchange_detail, exchange.exchange_want,
+            exchange.exchange_img, sex.sexname, size.sizes, type.name AS typename, exchange.id_size, exchange.id_sex, exchange.id_type
+            FROM exchange
+            INNER JOIN users ON exchange.id = users.id
+            INNER JOIN sex ON exchange.id_sex = sex.id_sex
+            INNER JOIN size ON exchange.id_size = size.id_size
+            INNER JOIN type ON exchange.id_type = type.id_type
+            WHERE id_exchange = ?`, [id_exchange],
+            (err, exchangeResult) => {
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
+                }
+                
+                // ส่งข้อมูลผู้ใช้และข้อมูลการแลกเปลี่ยนกลับไปยังไคลเอนต์
+                res.json({
+                    status: "success",
+                    exchange: exchangeResult
+                });
+            }
+        )
 
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <nologvie>", error: error });
+        console.log(error);
+        next();
+    }
+}
 

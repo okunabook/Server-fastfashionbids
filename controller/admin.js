@@ -22,7 +22,7 @@ exports.viewuser = async (req, res, next) => {
 
                 // กรณีเป้ฯadmin จะใช้ฟังชั่นด้านล่างได้
                 db.query(
-                    `SELECT username, fname, lname, img, id FROM users WHERE role = "user"`,
+                    `SELECT username, fname, lname, tel,img, id FROM users WHERE role = "user"`,
                     (err, result) => {
                         if (err) {
                             console.log(err);

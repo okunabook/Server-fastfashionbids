@@ -1,17 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const {addexchange,listexchange,readexchange,detailexchange,option} = require('../controller/exchange')
+const {addexchange,listexchange,readexchange,detailexchange,option,nologvie} = require('../controller/exchange')
 const {removeexchange} = require('../controller/admin')
 const {addstore,readstore,removestore} = require('../controller/store')
 const upload = require("../middleware/uploadimage")
 
 //     All router Exchange
-router.post('/:id/addexchange',upload.single('exchange_img'),addexchange)
-router.get('/exchange',listexchange)
+router.post('/:id/addexchange',upload.single('exchange_img'),addexchange)  //เพิ่มสินค้าexchange 
+router.get('/exchange',listexchange)  //แสดงสินค้าexchange ทั้งหมด
 router.post('/options',option)
-router.get('/:id/exchange',readexchange)
-router.get('/exchange/:id_exchange/:id',detailexchange)
-router.delete('/:id/removeexchange/:id_exchange',removeexchange)
+router.get('/:id/exchange',readexchange)  //ดูสินค้าexchange ของตัวเอง
+router.get('/exchange/:id_exchange/:id',detailexchange)  //ดูรายระเอียดสินค้าแบบloginแล้ว
+router.get('/exchange/:id_exchange',nologvie) //ดูรายละเอียดสินค้าแบบไม่ได้login
+router.delete('/:id/removeexchange/:id_exchange',removeexchange)  //ลบสินค้า
+
+
+
 
 
 
