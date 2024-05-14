@@ -346,8 +346,8 @@ exports.exchangegetname = async(req,res,next)=>{
 
 exports.poststore = async (req, res, next) => {
     const id_alllist = uuid.v4();
-    const { id} = req.params;
-    const { id_store,id_exchange } = req.body;
+    const { id,id_exchange} = req.params;
+    const { id_store } = req.body;
 
     try {
         // ขั้นตอนที่ 1: ดึงข้อมูลร้านค้าที่เป็นของผู้ใช้
