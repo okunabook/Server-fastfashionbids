@@ -216,7 +216,7 @@ exports.detailexchange = async (req, res, next) => {
 }
 
 // ดูรายละเอียดสินค้าแบบloginแล้ว
-exports.nologvie = async(req,res)=>{
+exports.nologvie = async(req,res,next)=>{
     try {
         const {id_exchange} = req.params
         db.query(
@@ -250,3 +250,142 @@ exports.nologvie = async(req,res)=>{
     }
 }
 
+////////////test///////////////////////////////////////////////////////////////////////////////////////
+exports.postname = async(req,res,next) =>{
+    const id_list = uuid.v4();
+    const {id,id_exchange} = req.params
+    try {
+        db.query(
+            `INSERT INTO exchangelistname (id_list,id, id_exchange) value (?,?,?) `,
+            [id_list,id,id_exchange],
+            (err,result)=>{
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
+                }
+                
+                res.json({
+                    status: "success",
+                    data: result
+                });
+            }
+        )
+        
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <postname>", error: error });
+        console.log(error);
+        next();
+    }
+}
+
+///////////// userดูuser เห็นแค่ชื่อ
+exports.getname = async(req,res,next)=>{
+    const {id_exchange} = req.params
+    try {
+        db.query(
+            `select users.username
+            from exchangelistname
+            inner join users on exchangelistname.id = users.id
+            where exchangelistname.id_exchange = ?`,[id_exchange],
+            (err,result)=>{
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
+                }
+                
+                res.json({
+                    status: "success",
+                    data: result
+                });
+            }
+        )
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <getname>", error: error });
+        console.log(error);
+        next();
+    }
+}
+
+//////////////exchange view จะเห็นชื่อ และstoreทั้งหมดของuserที่ลงแลกเปลี่ยนสินค้า
+exports.exchangegetname = async(req,res,next)=>{
+    const {id_exchange} = req.params
+    try {
+        db.query(
+            `select users.username,store.*
+            from exchangelistname
+            inner join users on exchangelistname.id = users.id
+            inner join store on exchangelistname.id = store.id
+            where exchangelistname.id_exchange = ?`,[id_exchange],
+            (err,result)=>{
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
+                }
+                
+                res.json({
+                    status: "success",
+                    data: result
+                });
+            }
+        )
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <getname>", error: error });
+        console.log(error);
+        next();
+    }
+}
+
+////////////test///////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////test2///////////////////////
+
+
+exports.poststore = async (req, res, next) => {
+    const id_alllist = uuid.v4();
+    const { id, id_exchange } = req.params;
+    const { id_store } = req.body;
+
+    try {
+        // ขั้นตอนที่ 1: ดึงข้อมูลร้านค้าที่เป็นของผู้ใช้
+        db.query(
+            `SELECT id_store FROM store WHERE id = ?`,
+            [id],
+            (err, results) => {
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
+                }
+
+                // ขั้นตอนที่ 2: ตรวจสอบว่า id_store ที่ให้มานั้นอยู่ในร้านค้าของผู้ใช้หรือไม่
+                const userStores = results.map(store => store.id_store);
+                if (!userStores.includes(id_store)) {
+                    res.json({ status: "error", message: "Unauthorized store ID" });
+                    return next();
+                }
+
+                // ขั้นตอนที่ 3: เพิ่มข้อมูลลงใน list ถ้าร้านค้านั้นถูกต้อง
+                db.query(
+                    `INSERT INTO list (id_alllist, id, id_exchange, id_store) VALUES (?, ?, ?, ?)`,
+                    [id_alllist, id, id_exchange, id_store],
+                    (err, result) => {
+                        if (err) {
+                            res.json({ status: "error", message: err });
+                            console.log(err);
+                            return next();
+                        }
+                        res.json({ status: "success", message: "Store added successfully", result });
+                    }
+                );
+            }
+        );
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <poststore>", error: error });
+        console.log(error);
+        next();
+    }
+};

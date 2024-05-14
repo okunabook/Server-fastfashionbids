@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addexchange,listexchange,readexchange,detailexchange,option,nologvie} = require('../controller/exchange')
+const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore} = require('../controller/exchange')
 const {removeexchange} = require('../controller/admin')
 const {addstore,readstore,removestore} = require('../controller/store')
 const upload = require("../middleware/uploadimage")
@@ -15,6 +15,13 @@ router.get('/exchange/:id_exchange',nologvie) //ดูรายละเอี�
 router.delete('/:id/removeexchange/:id_exchange',removeexchange)  //ลบสินค้า
 
 
+///test1///
+router.post('/:id/name/:id_exchange',postname) //ลงชื่อแลกชินค้านั้นๆ   ///idต้องเป็นคนอื่น 
+router.get('/user/view/:id_exchange',getname) /// แสดงข้อมูลชื่อ และ ของ
+router.get('/view/:id_exchange',exchangegetname)
+
+///test2//
+router.post('/:id/poststore/:id_exchange',poststore)
 
 
 
