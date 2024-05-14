@@ -21,7 +21,7 @@ router.get('/user/view/:id_exchange',getname) /// แสดงข้อมูล
 router.get('/view/:id_exchange',exchangegetname)
 
 ///test2//
-router.post('/:id/poststore/:id_exchange',poststore)
+router.post('/:id/poststore/',poststore)
 
 
 
