@@ -22,7 +22,7 @@ router.get('/view/:id_exchange',exchangegetname)
 
 ///test2//
 router.post('/:id/poststore/:id_exchange',poststore)
-router.get('/getstore/:id',getlist)
+router.get('/getstore/:id_exchange',getlist)
 
 
 

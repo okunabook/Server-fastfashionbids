@@ -409,32 +409,41 @@ exports.poststore = async (req, res, next) => {
 };
 
 
-
-exports.getlist = async(req,res)=>{
+exports.getlist = (req, res, next) => {
     try {
-        const {id} = req.params
+        const { id_exchange } = req.params;
         db.query(
-            `select users.*,store.*
-            from list
-            inner join store on list.id = store.id
-            inner join users on list.id = users.id
-            where list.id = ?`,[id],
-            (err,result)=>{
+            `SELECT users.img AS exchangeimg
+            FROM exchange
+            INNER JOIN users ON exchange.id = users.id
+            WHERE exchange.id_exchange = ?`, [id_exchange],
+            (err, exchanger) => {
                 if (err) {
-                    res.json({ status: "error", message: err });
-                    console.log(err);
-                    return next();
+                    console.error(err);
+                    return res.status(500).json({ status: "error", message: "Database error" });
                 }
-                
-                res.json({
-                    status: "success",
-                    data: result
-                });
+                db.query(
+                    `SELECT users.*, store.*
+                    FROM list
+                    INNER JOIN users ON list.id = users.id
+                    INNER JOIN store ON list.id = store.id
+                    WHERE list.id_exchange = ?`, [id_exchange],
+                    (err, stored) => {
+                        if (err) {
+                            console.error(err);
+                            return res.status(500).json({ status: "error", message: "Database error" });
+                        }
+                        return res.json({
+                            status: "success",
+                            exchange: exchanger,
+                            store: stored
+                        });
+                    }
+                );
             }
-        )
+        );
     } catch (error) {
-        res.json({ status: 500, message: "Server Error <getlist>", error: error });
-        console.log(error);
-        next();
+        console.error(error);
+        return res.status(500).json({ status: "error", message: "Server error" });
     }
-}
+};
