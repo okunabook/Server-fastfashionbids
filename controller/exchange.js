@@ -389,3 +389,33 @@ exports.poststore = async (req, res, next) => {
         next();
     }
 };
+
+
+exports.getlist = async(req,res)=>{
+    try {
+        const {id} = req.params
+        db.query(
+            `select users.*,store.*
+            from list
+            inner join store on list.id = store.id
+            inner join users on list.id = users.id
+            where list.id = ?`,[id],
+            (err,result)=>{
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
+                }
+                
+                res.json({
+                    status: "success",
+                    data: result
+                });
+            }
+        )
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <getlist>", error: error });
+        console.log(error);
+        next();
+    }
+}
