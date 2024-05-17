@@ -346,7 +346,7 @@ exports.exchangegetname = async(req,res,next)=>{
 
 exports.poststore = async (req, res, next) => {
     const id_alllist = uuid.v4();
-    const { id, id_exchange } = req.params;
+    const { id,id_exchange} = req.params;
     const { id_store } = req.body;
 
     try {
@@ -368,35 +368,17 @@ exports.poststore = async (req, res, next) => {
                     return next();
                 }
 
-                // ขั้นตอนที่ 3: ตรวจสอบว่า id นี้เคยโพสต์ไว้หรือไม่
+                // ขั้นตอนที่ 3: เพิ่มข้อมูลลงใน list ถ้าร้านค้านั้นถูกต้อง
                 db.query(
-                    `SELECT * FROM list WHERE id = ? AND id_exchange = ? AND id_store = ?`,
-                    [id, id_exchange, id_store],
-                    (err, existingPosts) => {
+                    `INSERT INTO list (id_alllist, id, id_exchange, id_store) VALUES (?, ?, ?, ?)`,
+                    [id_alllist, id, id_exchange, id_store],
+                    (err, result) => {
                         if (err) {
                             res.json({ status: "error", message: err });
                             console.log(err);
                             return next();
                         }
-
-                        if (existingPosts.length > 0) {
-                            res.json({ status: "error", message: "This id has already posted" });
-                            return next();
-                        }
-
-                        // ขั้นตอนที่ 4: เพิ่มข้อมูลลงใน list ถ้าร้านค้านั้นถูกต้องและยังไม่ได้โพสต์
-                        db.query(
-                            `INSERT INTO list (id_alllist, id, id_exchange, id_store) VALUES (?, ?, ?, ?)`,
-                            [id_alllist, id, id_exchange, id_store],
-                            (err, result) => {
-                                if (err) {
-                                    res.json({ status: "error", message: err });
-                                    console.log(err);
-                                    return next();
-                                }
-                                res.json({ status: "success", message: "Store added successfully", result });
-                            }
-                        );
+                        res.json({ status: "success", message: "Store added successfully", result });
                     }
                 );
             }
@@ -447,3 +429,28 @@ exports.getlist = (req, res, next) => {
         return res.status(500).json({ status: "error", message: "Server error" });
     }
 };
+
+exports.viewstore =async(req,res)=>{
+    const {id_store} = req.params
+    try {
+        db.query(`select * from store where store.id_store = ?
+        `,[id_store],
+    (err,result)=>{
+        if (err) {
+            res.json({ status: "error", message: err });
+            console.log(err);
+            return next();
+        }
+        
+        res.json({
+            status: "success",
+            data: result
+        });
+
+    })
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <viewstore>", error: error });
+        console.log(error);
+        next();
+    }
+}

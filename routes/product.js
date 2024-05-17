@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore,getlist} = require('../controller/exchange')
+const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore,getlist,viewstore} = require('../controller/exchange')
 const {removeexchange} = require('../controller/admin')
 const {addstore,readstore,removestore} = require('../controller/store')
 const upload = require("../middleware/uploadimage")
@@ -23,6 +23,7 @@ router.get('/view/:id_exchange',exchangegetname)
 ///test2//
 router.post('/:id/poststore/:id_exchange',poststore)
 router.get('/getstore/:id_exchange',getlist)
+router.get('/viewstore/:id_store',viewstore)
 
 
 
