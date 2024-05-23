@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore,getlist,viewstore} = require('../controller/exchange')
+const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore,getlist,viewstore,comment,getcomment} = require('../controller/exchange')
 const {removeexchange} = require('../controller/admin')
 const {addstore,readstore,removestore} = require('../controller/store')
 const upload = require("../middleware/uploadimage")
@@ -13,6 +13,8 @@ router.get('/:id/exchange',readexchange)  //ดูสินค้าexchange ข
 router.get('/exchange/:id_exchange/:id',detailexchange)  //ดูรายระเอียดสินค้าแบบloginแล้ว
 router.get('/exchange/:id_exchange',nologvie) //ดูรายละเอียดสินค้าแบบไม่ได้login
 router.delete('/:id/removeexchange/:id_exchange',removeexchange)  //ลบสินค้า
+router.post('/comment/:id_exchange/:id',comment) //comment หน้าดูสินค้าชิ้นเดี่ยว
+router.get('/getcomment/:id_exchange',getcomment)// ดู commentทัังหมด หน้าดูสินค้าชิ้นเดี่ยว
 
 
 ///test1///

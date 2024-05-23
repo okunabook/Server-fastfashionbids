@@ -430,7 +430,7 @@ exports.getlist = (req, res, next) => {
     }
 };
 
-exports.viewstore =async(req,res)=>{
+exports.viewstore =async(req,res,next)=>{
     const {id_store} = req.params
     try {
         db.query(`select * from store where store.id_store = ?
@@ -454,3 +454,64 @@ exports.viewstore =async(req,res)=>{
         next();
     }
 }
+
+///////////////////////// comment///////////////////////////////////////////////////////////////
+
+///////////////post comment///////////////////
+exports.comment = async(req,res,next)=>{
+    try {
+        const id_comment = uuid.v4()
+        const {id,id_exchange} = req.params
+        const {comment}  = req.body
+        db.query(
+            `INSERT INTO comment (id_comment, id, id_exchange, comment) VALUES (?, ?, ?, ?)`,
+            [id_comment,id,id_exchange,comment],
+            (err,result)=>{
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    console.log(err);
+                    return next();
+                }
+                res.json({
+                    status: "success",
+                    data: result
+                });
+            }
+        )
+
+        
+    } catch (error) {
+        res.json({ status: 500, message: "Server Error <comment>", error: error });
+        console.log(error);
+        next();
+    }
+}
+
+//////////////// get comment///////////////////////////
+exports.getcomment = async (req, res, next) => {
+    try {
+        const { id_exchange } = req.params;
+        db.query(
+            `SELECT users.username, comment.comment
+            FROM comment
+            INNER JOIN users ON comment.id = users.id
+            WHERE id_exchange = ?`,
+            [id_exchange],
+            (err, result) => {
+                if (err) {
+                    res.status(500).json({ status: "error", message: err.message });
+                    console.log(err);
+                    return next();
+                }
+                res.status(200).json({
+                    status: "success",
+                    data: result
+                });
+            }
+        );
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "Server Error <comment>", error: error.message });
+        console.log(error);
+        next();
+    }
+};
