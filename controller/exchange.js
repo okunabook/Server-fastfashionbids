@@ -494,7 +494,7 @@ exports.getcomment = async (req, res, next) => {
         db.query(
             `SELECT users.username, comment.comment
             FROM comment
-            INNER JOIN users ON comment.user_id = users.id
+            INNER JOIN users ON comment.id = users.id
             WHERE comment.id_exchange = ?
             ORDER BY comment.id_comment DESC`,
             [id_exchange],
@@ -519,29 +519,34 @@ exports.getcomment = async (req, res, next) => {
 
 
 ///////////////////// detail เจ้าของexchange ดู สินค้าที่คนอื่นเอามาแลก/////////////////////////////
-exports.getdetail = async(req,res,next)=>{
-    const {id} = req.params
+exports.getdetail = async (req, res, next) => {
+    const { id } = req.params;
     try {
-        db.query(
-            `select store.*
-            from list
-            inner join store on list.id_store = store.id_store
-            where list.id = ?`,[id],
-            (err,result)=>{
-                if (err) {
-                    res.status(500).json({ status: "error", message: err.message });
-                    console.log(err);
-                    return next();
-                }
-                res.status(200).json({
-                    status: "success",
-                    data: result
-                });
+        const query = `
+            SELECT users.username, store.store_name, store.store_brand, store.store_color, store.store_detail, store.store_img, sex.sexname, size.sizes, type.name AS typename
+            FROM list
+            INNER JOIN store ON list.id_store = store.id_store
+            INNER JOIN users ON list.id = users.id
+            INNER JOIN sex ON store.id_sex = sex.id_sex
+            INNER JOIN type ON store.id_type = type.id_type
+            INNER JOIN size ON store.id_size = size.id_size
+            WHERE list.id = ?`;
+
+        db.query(query, [id], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ status: "error", message: err.message });
+                return next(err);  // ส่งผ่าน error ไปยัง middleware ถัดไป
             }
-        )
+            res.status(200).json({
+                status: "success",
+                data: result
+            });
+        });
     } catch (error) {
-        res.status(500).json({ status: "error", message: "Server Error <getdetail>", error: error.message });
         console.log(error);
-        next();
+        res.status(500).json({ status: "error", message: "Server Error <getdetail>", error: error.message });
+        next(error);  // ส่งผ่าน error ไปยัง middleware ถัดไป
     }
-}
+};
+
