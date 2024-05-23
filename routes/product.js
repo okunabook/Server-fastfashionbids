@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore,getlist,viewstore,comment,getcomment} = require('../controller/exchange')
+const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore,getlist,viewstore,comment,getcomment,getdetail} = require('../controller/exchange')
 const {removeexchange} = require('../controller/admin')
 const {addstore,readstore,removestore} = require('../controller/store')
 const upload = require("../middleware/uploadimage")
@@ -15,7 +15,7 @@ router.get('/exchange/:id_exchange',nologvie) //ดูรายละเอี�
 router.delete('/:id/removeexchange/:id_exchange',removeexchange)  //ลบสินค้า
 router.post('/comment/:id_exchange/:id',comment) //comment หน้าดูสินค้าชิ้นเดี่ยว
 router.get('/getcomment/:id_exchange',getcomment)// ดู commentทัังหมด หน้าดูสินค้าชิ้นเดี่ยว
-
+router.get('/detail/:id',getdetail) // detail เจ้าของexchange ดู สินค้าที่คนอื่นเอามาแลก
 
 ///test1///
 router.post('/:id/name/:id_exchange',postname) //ลงชื่อแลกชินค้านั้นๆ   ///idต้องเป็นคนอื่น 
@@ -26,6 +26,8 @@ router.get('/view/:id_exchange',exchangegetname)
 router.post('/:id/poststore/:id_exchange',poststore)
 router.get('/getstore/:id_exchange',getlist)
 router.get('/viewstore/:id_store',viewstore)
+
+
 
 
 

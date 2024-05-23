@@ -460,12 +460,12 @@ exports.viewstore =async(req,res,next)=>{
 ///////////////post comment///////////////////
 exports.comment = async(req,res,next)=>{
     try {
-        const id_comment = uuid.v4()
+       
         const {id,id_exchange} = req.params
         const {comment}  = req.body
         db.query(
-            `INSERT INTO comment (id_comment, id, id_exchange, comment) VALUES (?, ?, ?, ?)`,
-            [id_comment,id,id_exchange,comment],
+            `INSERT INTO comment (id, id_exchange, comment) VALUES (?, ?, ?)`,
+            [id,id_exchange,comment],
             (err,result)=>{
                 if (err) {
                     res.json({ status: "error", message: err });
@@ -494,8 +494,9 @@ exports.getcomment = async (req, res, next) => {
         db.query(
             `SELECT users.username, comment.comment
             FROM comment
-            INNER JOIN users ON comment.id = users.id
-            WHERE id_exchange = ?`,
+            INNER JOIN users ON comment.user_id = users.id
+            WHERE comment.id_exchange = ?
+            ORDER BY comment.id_comment DESC`,
             [id_exchange],
             (err, result) => {
                 if (err) {
@@ -515,3 +516,32 @@ exports.getcomment = async (req, res, next) => {
         next();
     }
 };
+
+
+///////////////////// detail เจ้าของexchange ดู สินค้าที่คนอื่นเอามาแลก/////////////////////////////
+exports.getdetail = async(req,res,next)=>{
+    const {id} = req.params
+    try {
+        db.query(
+            `select store.*
+            from list
+            inner join store on list.id_store = store.id_store
+            where list.id = ?`,[id],
+            (err,result)=>{
+                if (err) {
+                    res.status(500).json({ status: "error", message: err.message });
+                    console.log(err);
+                    return next();
+                }
+                res.status(200).json({
+                    status: "success",
+                    data: result
+                });
+            }
+        )
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "Server Error <getdetail>", error: error.message });
+        console.log(error);
+        next();
+    }
+}
