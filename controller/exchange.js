@@ -523,7 +523,7 @@ exports.getdetail = async (req, res, next) => {
     const { id } = req.params;
     try {
         const query = `
-            SELECT users.fname,users.lname, store.store_name, store.store_brand, store.store_color, store.store_detail, store.store_img, sex.sexname, size.sizes, type.name AS typename
+            SELECT users.fname,users.lname, store.id_store,store.store_name, store.store_brand, store.store_color, store.store_detail, store.store_img, sex.sexname, size.sizes, type.name AS typename
             FROM list
             INNER JOIN store ON list.id_store = store.id_store
             INNER JOIN users ON list.id = users.id
