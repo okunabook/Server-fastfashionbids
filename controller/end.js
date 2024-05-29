@@ -111,7 +111,7 @@ exports.address = async (req, res, next) => {
 
 exports.status = async (req, res, next) => {
     try {
-        const { id_store } = req.body
+        const { id_store } = req.params
         db.query(
             `UPDATE list set status = "success"
             WHERE id_store = ?
