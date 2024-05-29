@@ -88,7 +88,7 @@ exports.address = async (req, res, next) => {
                         const response = {
                             status: "success",
                             user: stored[0], // ข้อมูลผู้ใช้
-                            store: stored[0].id_store ? stored : [], // ข้อมูลร้านค้า ถ้ามี
+                             // ข้อมูลร้านค้า ถ้ามี
                             exchange: exchanged[0].id_exchange ? exchanged : [] // ข้อมูลการแลกเปลี่ยน ถ้ามี
                         };
 
