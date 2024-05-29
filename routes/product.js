@@ -3,6 +3,7 @@ const router = express.Router();
 const {addexchange,listexchange,readexchange,detailexchange,option,nologvie,postname,getname,exchangegetname,poststore,getlist,viewstore,comment,getcomment,getdetail} = require('../controller/exchange')
 const {removeexchange} = require('../controller/admin')
 const {addstore,readstore,removestore} = require('../controller/store')
+const{address,status} = require('../controller/end')  ///////controller end
 const upload = require("../middleware/uploadimage")
 
 //     All router Exchange
@@ -27,7 +28,10 @@ router.post('/:id/poststore/:id_exchange',poststore)
 router.get('/getstore/:id_exchange',getlist)
 router.get('/viewstore/:id_store',viewstore)
 
-
+////////ยืนยัน
+router.put('/success/:id_store',status)
+///ส่งaddress
+router.get('/address/:id',address)
 
 
 
