@@ -85,15 +85,10 @@ exports.address = async (req, res, next) => {
                         }
 
                         // รวมข้อมูลของตัวเองและฝ่ายตรงข้าม
-                        const response = {
-                            status: "success",
-                            user: stored[0], // ข้อมูลผู้ใช้
-                             // ข้อมูลร้านค้า ถ้ามี
-                            exchange: exchanged[0]// ข้อมูลการแลกเปลี่ยน ถ้ามี
-                        };
+                        
 
                         // ส่งผลลัพธ์กลับ
-                        return res.json(response);
+                        return res.json({status: "success",user:stored[0],exchange: exchanged[0] });
                     }
                 );
             }
