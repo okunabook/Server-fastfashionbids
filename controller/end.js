@@ -52,42 +52,69 @@ const db = require('../config/db')
 //     }
 // };
 
+// exports.address = async (req, res, next) => {
+//     const { id } = req.params; // รับ id จาก params
+//     try {
+//         // คิวรีข้อมูลผู้ใช้และร้านค้า
+//         db.query(
+//             `SELECT users.*, store.*
+//             FROM list
+//             INNER JOIN users ON list.id = users.id
+//             LEFT JOIN store ON store.id_store = list.id_store
+//             WHERE list.id = ? AND list.status = "success"`,
+//             [id],
+//             (err, stored) => {
+//                 if (err) {
+//                     console.log(err);
+//                     res.json({ status: "error", message: err });
+//                     return next();
+//                 }
+
+//                 // คิวรีข้อมูลการแลกเปลี่ยน
+//                 db.query(
+//                     `SELECT users.*, exchange.*
+//                     FROM list
+//                     INNER JOIN users ON list.id = users.id
+//                     LEFT JOIN exchange ON exchange.id_exchange = list.id_exchange
+//                     WHERE list.id = ? AND list.status = "success"`,
+//                     [id],
+//                     (err, exchanged) => {
+//                         if (err) {
+//                             console.log(err);
+//                             res.json({ status: "error", message: err });
+//                             return next();
+//                         }
+//                         console.log({status: "success",user:stored[0],exchange: exchanged[0] });
+//                         return res.json({status: "success",user:stored[0],exchange: exchanged[0] });
+//                     }
+//                 );
+//             }
+//         );
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ status: 500, message: "Server Error <address>", error: error });
+//         return next();
+//     }
+// };
 exports.address = async (req, res, next) => {
     const { id } = req.params; // รับ id จาก params
     try {
         // คิวรีข้อมูลผู้ใช้และร้านค้า
         db.query(
-            `SELECT users.*, store.*
-            FROM list
-            INNER JOIN users ON list.id = users.id
-            LEFT JOIN store ON store.id_store = list.id_store
-            WHERE list.id = ? AND list.status = "success"`,
+            `SELECT users.fname,users.lname,users.address,users.tel
+            FROM users
+            WHERE users.id = ?` ,
             [id],
-            (err, stored) => {
+            (err,result) => {
                 if (err) {
                     console.log(err);
                     res.json({ status: "error", message: err });
                     return next();
                 }
-
-                // คิวรีข้อมูลการแลกเปลี่ยน
-                db.query(
-                    `SELECT users.*, exchange.*
-                    FROM list
-                    INNER JOIN users ON list.id = users.id
-                    LEFT JOIN exchange ON exchange.id_exchange = list.id_exchange
-                    WHERE list.id = ? AND list.status = "success"`,
-                    [id],
-                    (err, exchanged) => {
-                        if (err) {
-                            console.log(err);
-                            res.json({ status: "error", message: err });
-                            return next();
-                        }
-                        console.log({status: "success",user:stored[0],exchange: exchanged[0] });
-                        return res.json({status: "success",user:stored[0],exchange: exchanged[0] });
-                    }
-                );
+                res.json({
+                    message: "success",
+                    data: result,
+                });
             }
         );
     } catch (error) {
