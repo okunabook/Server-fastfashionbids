@@ -1,7 +1,7 @@
 const db = require('../config/db')
 
 
-exports.postreport = async(res,req)=>{
+exports.postreport = async(res,req,next)=>{
     const {id_user,id_me} = req.params
     const {content} = req.body
     try {
