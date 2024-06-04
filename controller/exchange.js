@@ -182,7 +182,7 @@ exports.detailexchange = async (req, res, next) => {
                 
                 // ค้นหาข้อมูลการแลกเปลี่ยน
                 db.query(
-                    `SELECT users.username, exchange.id_exchange, exchange.exchange_name, exchange.exchange_brand, exchange.exchange_color, exchange.exchange_detail, exchange.exchange_want,
+                    `SELECT users.*, exchange.id_exchange, exchange.exchange_name, exchange.exchange_brand, exchange.exchange_color, exchange.exchange_detail, exchange.exchange_want,
                     exchange.exchange_img, sex.sexname, size.sizes, type.name AS typename, exchange.id_size, exchange.id_sex, exchange.id_type
                     FROM exchange
                     INNER JOIN users ON exchange.id = users.id
