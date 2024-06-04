@@ -170,7 +170,7 @@ exports.detailexchange = async (req, res, next) => {
 
         // ค้นหาข้อมูลผู้ใช้
         db.query(
-            `SELECT users.img
+            `SELECT users.img,users.fname,users.lname,users.address,users.tel
             FROM users
             WHERE users.id = ?`, [id],
             (err, userResult) => {
@@ -523,7 +523,7 @@ exports.getdetail = async (req, res, next) => {
     const { id } = req.params;
     try {
         const query = `
-            SELECT users.fname,users.lname, store.id_store,store.store_name, store.store_brand, store.store_color, store.store_detail, store.store_img, sex.sexname, size.sizes, type.name AS typename
+            SELECT users.fname,users.lname, store.id_store,store.store_name, store.store_brand, store.store_color, store.store_detail, store.store_img, sex.sexname, size.sizes, type.name AS typename,users.address,users.tel
             FROM list
             INNER JOIN store ON list.id_store = store.id_store
             INNER JOIN users ON list.id = users.id
