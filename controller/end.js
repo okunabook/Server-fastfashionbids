@@ -197,6 +197,7 @@ exports.status = async (req, res, next) => {
     try {
         const { id_user } = req.params
         const {h_fname,h_lname,h_store_name,h_address,tel} = req.body
+        console.log(h_fname,h_lname,h_store_name,h_address,tel);
         db.query(
             `insert into history(h_fname,h_lname,h_store_name,h_address,tel,id_user) value(?,?,?,?,?,?)
             `, [h_fname,h_lname,h_store_name,h_address,tel,id_user],
