@@ -7,7 +7,7 @@ exports.postreport = async(req,res,next)=>{
     console.log(id_user,id_me,content);
     try {
         db.query`
-        insert into report (id_user,id_me,content) value(?,?,?)
+        insert into getde (id_user,id_me,content) value(?,?,?)
         `,[id_user,id_me,content],
         (err,result)=>{
             if (err) {
@@ -35,10 +35,10 @@ exports.getreport = async (req, res, next) => {
     
     try {
         db.query(
-            `SELECT report.*, users.*
-             FROM report
-             INNER JOIN users ON users.id = report.id_user 
-             WHERE report.id_user = ?`, [id_user],
+            `SELECT getde.*, users.*
+             FROM getde
+             INNER JOIN users ON users.id = getde.id_user 
+             WHERE getde.id_user = ?`, [id_user],
             (err, userReportResult) => {
                 if (err) {
                     console.log(err);
@@ -47,10 +47,10 @@ exports.getreport = async (req, res, next) => {
                 }
                 
                 db.query(
-                    `SELECT report.*, users.*
-                     FROM report
-                     INNER JOIN users ON users.id = report.id_user 
-                     WHERE report.id_me = ?`, [id_me],
+                    `SELECT getde.*, users.*
+                     FROM getde
+                     INNER JOIN users ON users.id = getde.id_user 
+                     WHERE getde.id_me = ?`, [id_me],
                     (err, meReportResult) => {
                         if (err) {
                             console.log(err);
