@@ -8,7 +8,7 @@ exports.postreport = async(req,res,next)=>{
     try {
         db.query`
         insert into report (id_user,id_me,content) value(?,?,?)
-        `[id_user,id_me,content],
+        `,[id_user,id_me,content],
         (err,result)=>{
             if (err) {
                 console.log(err);
