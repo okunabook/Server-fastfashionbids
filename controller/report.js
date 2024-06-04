@@ -2,13 +2,13 @@ const db = require('../config/db')
 
 
 exports.postreport = async(req,res,next)=>{
-    const {id_user,id_me} = req.params
+    // const {id_user,id_me} = req.params
     const {content} = req.body
     console.log(id_user,id_me,content);
     try {
         db.query`
-        insert into report (id_user,id_me,content) value(?,?,?)
-        `,[id_user,id_me,content],
+        insert into report (content) value(?)
+        `,[content],
         (err,result)=>{
             if (err) {
                 console.log(err);
