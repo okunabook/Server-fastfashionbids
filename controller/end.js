@@ -97,14 +97,14 @@ const db = require('../config/db')
 //     }
 // };
 exports.address = async (req, res, next) => {
-    const { id } = req.params; // รับ id จาก params
+    const { id_user } = req.params; // รับ id จาก params
     try {
         // คิวรีข้อมูลผู้ใช้และร้านค้า
         db.query(
-            `SELECT users.fname,users.lname,users.address,users.tel
-            FROM users
-            WHERE users.id = ?` ,
-            [id],
+            `SELECT *
+            FROM history
+            WHERE id_user = ?` ,
+            [id_user],
             (err,result) => {
                 if (err) {
                     console.log(err);
@@ -195,11 +195,11 @@ exports.address = async (req, res, next) => {
 
 exports.status = async (req, res, next) => {
     try {
-        const { id_store } = req.params
+        const { id_user } = req.params
+        const {h_fname,h_lname,h_store_name,h_address,tel} = req.body
         db.query(
-            `UPDATE list set status = "success"
-            WHERE id_store = ?
-            `, [id_store],
+            `insert into history(h_fname,h_lname,h_store_name,h_address,tel,id_user) value(?,?,?,?,?,?)
+            `, [h_fname,h_lname,h_store_name,h_address,tel,id_user],
             (err, result) => {
                 if (err) {
                     console.log(err);
@@ -216,5 +216,53 @@ exports.status = async (req, res, next) => {
         console.log(error);
         res.json({ status: 500, message: "Server Error <status>", error: error });
         return next();
+    }
+}
+
+/////////////////////ลบ exchange store
+exports.delid_ex_st = async (req, res) => {
+    const { id_store, id_exchange } = req.params;
+    try {
+        // ลบข้อมูลจาก list ที่อ้างอิงถึง exchange ก่อน
+        db.query(
+            `DELETE FROM list WHERE id_exchange = ?`,
+            [id_exchange],
+            (err, result) => {
+                if (err) {
+                    res.json({ status: "error", message: err });
+                    return;
+                }
+                
+                // ถ้าการลบจาก list สำเร็จ ให้ลบจาก exchange
+                db.query(
+                    `DELETE FROM exchange WHERE id_exchange = ?`,
+                    [id_exchange],
+                    (err, result) => {
+                        if (err) {
+                            res.json({ status: "error", message: err });
+                            return;
+                        }
+                        
+                        // ถ้าการลบจาก exchange สำเร็จ ให้ลบจาก store
+                        db.query(
+                            `DELETE FROM store WHERE id_store = ?`,
+                            [id_store],
+                            (err, result) => {
+                                if (err) {
+                                    res.json({ status: "error", message: err });
+                                    return;
+                                }
+                                res.json({
+                                    message: "success",
+                                });
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    } catch (error) {
+        console.log(error);
+        res.json({ status: 500, message: "Server Error <getid_ex_st>", error: error });
     }
 }
