@@ -29,7 +29,7 @@ router.get('/getstore/:id_exchange', getlist)
 router.get('/viewstore/:id_store', viewstore)
 
 ////////ยืนยัน
-router.post('/success/:id_user/:id_me', status)
+router.post('/success/:id_user', status)
 ///ส่งaddress
 router.get('/address/:id_user', address)
 /////ลบ store exchange /////////
