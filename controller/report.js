@@ -1,9 +1,10 @@
 const db = require('../config/db')
 
 
-exports.postreport = async(res,req,next)=>{
+exports.postreport = async(req,res,next)=>{
     const {id_user,id_me} = req.params
     const {content} = req.body
+    console.log(id_user,id_me);
     try {
         db.query`
         insert into report (id_user,id_me,content) value(?,?,?)
@@ -30,7 +31,7 @@ exports.postreport = async(res,req,next)=>{
 }
 
 exports.getreport = async (req, res, next) => {
-    const { id_user, id_me } = req.params;
+    const { id_user, id_me } = req.params
     
     try {
         db.query(
