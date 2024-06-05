@@ -44,27 +44,6 @@ exports.address = async (req, res, next) => {
                     res.json({ status: "error", message: err });
                     return next();
                 }
-                
-                if(result.length == 0){
-                    db.query(
-                        `SELECT *
-                        FROM history
-                        WHERE id_me = ?` ,
-                        [id_user],
-                        (err,result) => {
-                            if (err) {
-                                console.log(err);
-                                res.json({ status: "error", message: err });
-                                return next();
-                            }
-                            
-                            res.json({
-                                message: "success",
-                                data: result,
-                            });
-                        }
-                    );
-                }
                 res.json({
                     message: "success",
                     data: result,
