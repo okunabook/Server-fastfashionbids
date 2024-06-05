@@ -50,7 +50,7 @@ exports.address = async (req, res, next) => {
                         `SELECT *
                         FROM history
                         WHERE id_me = ?` ,
-                        [id_me],
+                        [id_user],
                         (err,result) => {
                             if (err) {
                                 console.log(err);
